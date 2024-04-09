@@ -25,6 +25,7 @@ public class MyStringBuilderState {
     }
 
     public MyStringBuilder undo() {
-        return new MyStringBuilder(text);
+        currentText = new MyStringBuilder(text);
+        return currentText;
     }
 }
