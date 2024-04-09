@@ -2,7 +2,7 @@ package ru.antonovmikhail.handmadesb;
 
 import java.util.Arrays;
 
-public class MySB {
+public class MyStringBuilder {
 
     private static final int INITIAL_CAPACITY = 16;
     private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 16;
@@ -10,11 +10,15 @@ public class MySB {
 
     int charCount = 0;
 
-    public MySB() {
+    public MyStringBuilder() {
     }
 
-    public MySB(String text) {
+    public MyStringBuilder(String text) {
         append(text);
+    }
+
+    public MyStringBuilder(char[] text) {
+        charArray = text;
     }
 
     public void append(String str) {
