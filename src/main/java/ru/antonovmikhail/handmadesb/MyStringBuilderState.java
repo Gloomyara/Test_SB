@@ -1,31 +1,40 @@
 package ru.antonovmikhail.handmadesb;
 
+import java.util.EmptyStackException;
+import java.util.Stack;
+
+
 public class MyStringBuilderState {
 
-    private String text;
-
+    private Stack<String> textStack = new Stack<>();
     private MyStringBuilder currentText = new MyStringBuilder();
 
-    public MyStringBuilderState(String text) {
-        this.text = text;
-    }
-
-    public MyStringBuilderState save() {
-        return new MyStringBuilderState(currentText.toString());
+    public void save() {
+        textStack.push(currentText.toString());
     }
     public MyStringBuilder getSB() {
         return currentText;
     }
-    public String getText() {
-        return text;
-    }
 
-    public void add(String str){
+    public MyStringBuilderState add(String str){
         currentText.append(str);
+        save();
+        return this;
     }
 
-    public MyStringBuilder undo() {
-        currentText = new MyStringBuilder(text);
-        return currentText;
+    public MyStringBuilderState undo() {
+        try {
+            textStack.pop();
+            currentText = new MyStringBuilder(textStack.peek());
+            return this;
+        } catch (EmptyStackException e){
+            currentText = new MyStringBuilder();
+            return this;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return currentText.toString();
     }
 }

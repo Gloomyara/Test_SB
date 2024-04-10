@@ -22,7 +22,7 @@ public class MyStringBuilder {
     }
 
     public void append(String str) {
-        if (charCount < charArray.length) {
+        if ((charCount + 16) < charArray.length) {
             for (char c : str.toCharArray()) {
                 charArray[charCount++] = c;
             }
