@@ -4,10 +4,10 @@ import java.util.Arrays;
 
 public class MyStringBuilder {
 
-    private static final int INITIAL_CAPACITY = 16;
-    private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 16;
-    char[] charArray = new char[INITIAL_CAPACITY];
-
+    static final int INITIAL_CAPACITY = 16;
+    private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 1;
+    private char[] charArray = new char[INITIAL_CAPACITY];
+    private MyStringBuilderState state = new MyStringBuilderState();
     int charCount = 0;
 
     public MyStringBuilder() {
@@ -17,23 +17,40 @@ public class MyStringBuilder {
         append(text);
     }
 
-    public MyStringBuilder(char[] text) {
-        charArray = text;
+    public MyStringBuilder append(String str) {
+        appendWoSave(str);
+        save();
+        return this;
     }
 
-    public void append(String str) {
-        if ((charCount + 16) < charArray.length) {
+    private void appendWoSave(String str) {
+        if ((charCount + str.length()) < charArray.length) {
             for (char c : str.toCharArray()) {
                 charArray[charCount++] = c;
             }
         } else {
-            int newLength = charArray.length + INITIAL_CAPACITY;
-            if (newLength >= MAX_ARRAY_SIZE) {
+            if (charArray.length >= MAX_ARRAY_SIZE / 2) {
                 throw new OutOfMemoryError("Required length exceeds implementation limit");
             }
+            int newLength = charArray.length * 2;
             charArray = Arrays.copyOf(charArray, newLength);
-            append(str);
+            appendWoSave(str);
         }
+    }
+
+    private void save() {
+        state.save(toString());
+    }
+
+    public MyStringBuilder undo() {
+        String str = state.undo();
+        charCount = str.length();
+        charArray = Arrays.copyOf(
+                str.toCharArray(),
+                (charCount > INITIAL_CAPACITY) ? ((charCount / INITIAL_CAPACITY + 1) * INITIAL_CAPACITY) :
+                        INITIAL_CAPACITY
+        );
+        return this;
     }
 
     public String toString() {
@@ -41,5 +58,4 @@ public class MyStringBuilder {
         System.arraycopy(charArray, 0, chars, 0, charCount);
         return new String(chars);
     }
-
 }

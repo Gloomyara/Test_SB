@@ -7,34 +7,17 @@ import java.util.Stack;
 public class MyStringBuilderState {
 
     private Stack<String> textStack = new Stack<>();
-    private MyStringBuilder currentText = new MyStringBuilder();
 
-    public void save() {
-        textStack.push(currentText.toString());
-    }
-    public MyStringBuilder getSB() {
-        return currentText;
+    public void save(String text) {
+        textStack.push(text);
     }
 
-    public MyStringBuilderState add(String str){
-        currentText.append(str);
-        save();
-        return this;
-    }
-
-    public MyStringBuilderState undo() {
+    public String undo() {
         try {
             textStack.pop();
-            currentText = new MyStringBuilder(textStack.peek());
-            return this;
+            return textStack.peek();
         } catch (EmptyStackException e){
-            currentText = new MyStringBuilder();
-            return this;
+            return "";
         }
-    }
-
-    @Override
-    public String toString() {
-        return currentText.toString();
     }
 }
